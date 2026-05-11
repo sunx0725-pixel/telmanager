@@ -1,0 +1,26 @@
+{
+  "name": "手机号管家",
+  "appid": "__UNI__TELENUMBER",
+  "description": "多手机号统一管理APP",
+  "versionName": "1.0.0",
+  "versionCode": "100",
+  "transformPx": false,
+  "h5": {
+    "title": "手机号管家",
+    "router": {
+      "mode": "hash",
+      "base": "./"
+    },
+    "devServer": {
+      "port": 5173,
+      "open": false
+    }
+  },
+  "mp-weixin": {
+    "appid": "wx1234567890123456",
+    "setting": {
+      "urlCheck": false
+    },
+    "usingComponents": true
+  }
+}
