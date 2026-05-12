@@ -169,6 +169,14 @@ onLoad((options) => {
   }
 })
 
+onMounted(() => {
+  if (numberId.value) {
+    numbersStore.getNumberDetail(numberId.value)
+    numbersStore.getBills(numberId.value)
+  }
+  paymentStore.fetchRecords()
+})
+
 const getOperatorColor = (operator: string) => operatorMap[operator]?.color || '#999999'
 const getOperatorIcon = (operator: string) => operatorMap[operator]?.icon || '📱'
 

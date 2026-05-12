@@ -103,12 +103,16 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useNumbersStore } from '@/stores/numbers'
 import { operatorMap } from '@/data/mock'
 
 const numbersStore = useNumbersStore()
 const searchText = ref('')
+
+onMounted(() => {
+  numbersStore.fetchNumbers()
+})
 
 const filteredNumbers = computed(() => {
   if (!searchText.value) return numbersStore.numbers
@@ -159,9 +163,9 @@ const toggleFreeze = (id: string) => {
       title: '解冻号码',
       content: '解冻后将恢复充值、开票等功能',
       confirmText: '确认解冻',
-      success: (res) => {
+      success: async (res) => {
         if (res.confirm) {
-          numbersStore.unfreezeNumber(id)
+          await numbersStore.unfreezeNumber(id, '')
           uni.showToast({ title: '已解冻', icon: 'success' })
         }
       }
@@ -172,9 +176,9 @@ const toggleFreeze = (id: string) => {
       content: '冻结后将仅保留查询功能',
       confirmText: '确认冻结',
       confirmColor: '#F44336',
-      success: (res) => {
+      success: async (res) => {
         if (res.confirm) {
-          numbersStore.freezeNumber(id)
+          await numbersStore.freezeNumber(id)
           uni.showToast({ title: '已冻结', icon: 'success' })
         }
       }
@@ -194,9 +198,9 @@ const deleteNumber = (id: string) => {
           title: '验证密码',
           editable: true,
           placeholderText: '请输入登录密码',
-          success: (pwdRes) => {
+          success: async (pwdRes) => {
             if (pwdRes.confirm && pwdRes.content) {
-              numbersStore.removeNumber(id)
+              await numbersStore.deleteNumber(id, pwdRes.content)
               uni.showToast({ title: '已删除', icon: 'success' })
             }
           }

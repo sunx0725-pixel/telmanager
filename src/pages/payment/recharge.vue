@@ -159,7 +159,7 @@ const selectNumber = (item: PhoneNumber) => {
   showNumberPicker.value = false
 }
 
-const submit = () => {
+const submit = async () => {
   if (!canSubmit.value) return
 
   if (selectedNumber.value?.isFrozen) {
@@ -170,21 +170,30 @@ const submit = () => {
   isProcessing.value = true
   uni.showLoading({ title: '支付中...' })
 
-  paymentStore.createRecharge(
-    selectedNumber.value.id,
-    selectedNumber.value.phone,
-    finalAmount.value,
-    payMethod.value
-  )
+  try {
+    const result = await paymentStore.createRecharge(
+      selectedNumber.value.id,
+      selectedNumber.value.phone,
+      finalAmount.value,
+      payMethod.value
+    )
 
-  setTimeout(() => {
     uni.hideLoading()
     isProcessing.value = false
-    uni.showToast({ title: '支付请求已提交', icon: 'success' })
-    setTimeout(() => {
-      uni.navigateBack()
-    }, 1500)
-  }, 3000)
+
+    if (result.success) {
+      uni.showToast({ title: '充值成功', icon: 'success' })
+      setTimeout(() => {
+        uni.navigateBack()
+      }, 1500)
+    } else {
+      uni.showToast({ title: '充值失败，请重试', icon: 'none' })
+    }
+  } catch (error) {
+    uni.hideLoading()
+    isProcessing.value = false
+    uni.showToast({ title: '充值失败，请重试', icon: 'none' })
+  }
 }
 </script>
 

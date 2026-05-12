@@ -48,7 +48,7 @@
         <view class="record-footer">
           <text class="record-amount">¥{{ record.amount }}</text>
           <view v-if="record.status === 'failed'" class="record-actions">
-            <view class="action-btn" @click="retryRecharge(record.id)">
+            <view class="action-btn" @click="retryRecharge(record.orderNo)">
               <text>重试</text>
             </view>
           </view>
@@ -64,7 +64,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { usePaymentStore } from '@/stores/payment'
 
 const paymentStore = usePaymentStore()
@@ -85,18 +85,21 @@ const getStatusClass = (status: string) => {
   }
 }
 
-const retryRecharge = (id: string) => {
+const retryRecharge = async (orderNo: string) => {
   uni.showModal({
     title: '重试充值',
     content: '确定要重试此笔充值吗？',
-    success: (res) => {
+    success: async (res) => {
       if (res.confirm) {
-        paymentStore.retryRecharge(id)
-        uni.showToast({ title: '已提交重试请求', icon: 'success' })
+        await paymentStore.retryPayment(orderNo)
       }
     }
   })
 }
+
+onMounted(() => {
+  paymentStore.fetchRecords()
+})
 </script>
 
 <style lang="scss" scoped>

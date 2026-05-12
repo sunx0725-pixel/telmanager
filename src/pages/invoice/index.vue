@@ -94,12 +94,16 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useInvoiceStore } from '@/stores/invoice'
 
 const invoiceStore = useInvoiceStore()
 
 const activeTab = ref<'all' | 'unissued' | 'issued'>('all')
+
+onMounted(() => {
+  invoiceStore.fetchInvoices()
+})
 
 const filteredInvoices = computed(() => {
   const invoices = invoiceStore.sortedByTime

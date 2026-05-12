@@ -88,6 +88,7 @@
 </template>
 
 <script setup lang="ts">
+import { onMounted } from 'vue'
 import { useSecurityStore } from '@/stores/security'
 import { useNumbersStore } from '@/stores/numbers'
 import { operatorMap } from '@/data/mock'
@@ -95,6 +96,11 @@ import type { PhoneNumber } from '@/types'
 
 const securityStore = useSecurityStore()
 const numbersStore = useNumbersStore()
+
+onMounted(() => {
+  securityStore.fetchLogs()
+  numbersStore.fetchNumbers()
+})
 
 const getLogIcon = (type: string) => {
   const icons: Record<string, string> = {
@@ -121,9 +127,9 @@ const toggleFreeze = (item: PhoneNumber) => {
             title: '短信验证',
             editable: true,
             placeholderText: '请输入验证码',
-            success: (codeRes) => {
+            success: async (codeRes) => {
               if (codeRes.confirm && codeRes.content) {
-                numbersStore.unfreezeNumber(item.id)
+                await numbersStore.unfreezeNumber(item.id, codeRes.content)
                 uni.showToast({ title: '解冻成功', icon: 'success' })
               }
             }
@@ -137,9 +143,9 @@ const toggleFreeze = (item: PhoneNumber) => {
       content: '冻结后将仅保留查询功能',
       confirmText: '确认冻结',
       confirmColor: '#F44336',
-      success: (res) => {
+      success: async (res) => {
         if (res.confirm) {
-          numbersStore.freezeNumber(item.id)
+          await numbersStore.freezeNumber(item.id)
           uni.showToast({ title: '冻结成功', icon: 'success' })
         }
       }

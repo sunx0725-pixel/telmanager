@@ -86,7 +86,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useUserStore } from '@/stores/user'
 import { useNumbersStore } from '@/stores/numbers'
 import { usePaymentStore } from '@/stores/payment'
@@ -98,6 +98,13 @@ const paymentStore = usePaymentStore()
 const invoiceStore = useInvoiceStore()
 
 const biometricEnabled = ref(false)
+
+onMounted(() => {
+  userStore.checkLogin()
+  numbersStore.fetchNumbers()
+  paymentStore.fetchRecords()
+  invoiceStore.fetchInvoices()
+})
 
 const goToSecurity = () => {
   uni.navigateTo({ url: '/pages/security/index' })

@@ -90,7 +90,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, onMounted } from 'vue'
 import { useNumbersStore } from '@/stores/numbers'
 import { usePaymentStore } from '@/stores/payment'
 import { operatorMap } from '@/data/mock'
@@ -126,6 +126,11 @@ const goToRecords = () => {
 const goToAddNumber = () => {
   uni.navigateTo({ url: '/pages/numbers/add' })
 }
+
+onMounted(() => {
+  numbersStore.fetchNumbers()
+  paymentStore.fetchRecords()
+})
 </script>
 
 <style lang="scss" scoped>

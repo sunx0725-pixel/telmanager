@@ -11,7 +11,7 @@
       <view class="header-actions">
         <view class="action-btn" @click="goToNotifications">
           <text class="action-icon">🔔</text>
-          <view v-if="securityStore.unreadCount > 0" class="badge">{{ securityStore.unreadCount }}</view>
+          <view v-if="userStore.unreadCount > 0" class="badge">{{ userStore.unreadCount }}</view>
         </view>
       </view>
     </view>
@@ -152,6 +152,10 @@ onMounted(() => {
   userStore.checkLogin()
   if (!userStore.isLoggedIn) {
     uni.redirectTo({ url: '/pages/login/index' })
+  } else {
+    // 加载数据
+    numbersStore.fetchNumbers()
+    userStore.getNotifications()
   }
 })
 
